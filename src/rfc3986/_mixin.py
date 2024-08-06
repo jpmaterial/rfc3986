@@ -262,7 +262,10 @@ class URIMixin:
         if not isinstance(base_uri, URIMixin):
             base_uri = type(self).from_string(base_uri)
 
-        if not base_uri.is_valid(require_scheme=True):
+        validator = validators.Validator().require_presence_of("scheme")
+        try:
+            validator.validate(base_uri)
+        except exc.ValidationError:
             raise exc.ResolutionError(base_uri)
 
         # This is optional per
